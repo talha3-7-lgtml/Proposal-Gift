@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Girlfriend?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .card {
+            background: white;
+            padding: 40px 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            max-width: 90%;
+            width: 400px;
+            z-index: 2;
+            animation: pop 0.5s ease;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        h1 { color: #ff4b6b; margin-bottom: 10px; }
+        p { color: #555; margin-bottom: 25px; line-height: 1.5; }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        #yesBtn { background: #ff4b6b; color: white; }
+        #noBtn { background: #eee; color: #555; position: relative; }
+
+        canvas {
+            position: fixed;
+            top: 0; left: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="confetti"></canvas>
+
+    <div class="card">
+        <h1>Will you be my girlfriend? 💖</h1>
+        <p>I’ve been thinking about this for a while, and I’d love to make it official. What do you say?</p>
+        <div class="btn-container">
+            <button id="yesBtn" onclick="startConfetti()">Yes!</button>
+            <button id="noBtn" onmouseover="moveButton()">No</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('confetti');
+        const ctx = canvas.getContext('2d');
+        let confetti = [];
+        const colors = ['#ff4b6b', '#ffd740', '#40c4ff', '#69f0ae', '#7c4dff'];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function createConfetti() {
+            return {
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height - canvas.height,
+                r: Math.random() * 6 + 4,
+                d: Math.random() * 10 + 2,
+                color: colors[Math.floor(Math.random() * colors.length)]
+            };
+        }
+
+        function startConfetti() {
+            for (let i = 0; i < 150; i++) {
+                confetti.push(createConfetti());
+            }
+            animate();
+            document.getElementById('yesBtn').innerText = "YAY! ❤️";
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            confetti.forEach((c, i) => {
+                ctx.beginPath();
+                ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
+                ctx.fillStyle = c.color;
+                ctx.fill();
+                c.y += c.d;
+                if (c.y > canvas.height) confetti[i] = createConfetti();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        function moveButton() {
+            const btn = document.getElementById('noBtn');
+            const x = Math.random() * (window.innerWidth - btn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - btn.offsetHeight);
+            btn.style.position = 'absolute';
+            btn.style.left = x + 'px';
+            btn.style.top = y + 'px';
+        }
+    </script>
+</body>
+</html>
